@@ -1,0 +1,30 @@
+body{
+    margin: 0;
+    padding : 1em 1.5em ;
+    line-height : 1.8 ;
+    border : solid 40px rgb(255, 255, 255) ;
+    background-color: steelblue;
+}
+
+
+img{
+    width: 300px;
+}
+
+.ue{
+    text-align: center;
+}
+
+p,h2{
+    color: white;
+}
+
+.kyoku{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+h2{
+    border-left: solid 8px #ffffff
+}
