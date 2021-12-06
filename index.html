@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sumikaクイズ</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/7-1-18/css/7-1-18.css">
+</head>
+<body>
+    <h2>sumika再生回数クイズ!!!</h2>
+    
+    <div class="mondai">
+        <p class="bun">再生回数が　</p>
+        <h1 id="saisei"></h1>
+        <p class="bun">回　のMVはどれ？</p>
+    </div>
+    
+    <div class="sentaku">
+        <button id="a"></button>
+        <button id="b"></button>
+        <button id="c"></button>
+        <button id="d"></button>
+    </div>
+    
+
+    <section id="modalArea" class="modalArea">
+        <div id="modalBg" class="modalBg"></div>
+        <div class="modalWrapper">
+            <div class="modalContents">
+                <img src="IMG_4667.PNG" alt="">
+                <p>もしかして…sumikaファン？？</p>
+                <button id="re">もう1回遊ぶ</button>
+                <button id="ju">もういいや</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="modalArea2" class="modalArea">
+        <div id="modalBg2" class="modalBg"></div>
+        <div class="modalWrapper">
+            <div class="modalContents">
+                <img src="IMG_4668.PNG" alt="">
+                <p id="seikai"></p>
+                <p>が正解でした！！</p>
+                <button id="ro">もう1回遊ぶ</button>
+                <button id="jo">もういいや</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    var apikey = 'AIzaSyAKxDV822HLIA7zFdk0LIk31L20d0ITwWw';
+    var listid = 'PLcJUKjdpm2J9j5YALJHXtNM7RV7vp5xHy';
+    var pagetoken = '';
+    var results = [];
+
+        $(function () {
+            get_api_data();
+        });
+
+
+        // URLを生成する関数
+        function generate_api_url(token) {
+            var url = 'https://www.googleapis.com/youtube/v3/playlistItems';
+            url += '?part=snippet';
+            url += '&maxResults=50';
+            if (pagetoken !== '') {
+                url += '&pageToken=' + token;
+            }
+            url += '&playlistId=' + listid;
+            url += '&key=' + apikey;
+            return url;
+        }
+
+        // データを取得する関数
+        function get_api_data() {
+            var getData = $.ajax({
+                url: generate_api_url(pagetoken),
+                dataType: 'json'
+            });
+
+            getData.then(
+                function (data) {
+                    pagetoken = data.nextPageToken;
+                    // 取得したデータを整形して結果用の配列に入れる
+                    for (var i = 0; i < data.items.length; i++) {
+                        results.push({
+                            title: data.items[i].snippet.title,
+                            id: data.items[i].snippet.resourceId.videoId
+                        });
+                    }
+                         console.log(results);
+
+        //四択クイズパート  
+                var randoms = [];
+                var min = 0, max = 29;
+
+                    /** 重複チェックしながら乱数作成 */
+                    for (i = min; i <= max; i++) {
+                        while (true) {
+                            var tmp = intRandom(min, max);
+                            if (!randoms.includes(tmp)) {
+                                randoms.push(tmp);
+                                break;
+                            }
+                        }
+                    }
+
+                    /** min以上max以下の整数値の乱数を返す */
+                    function intRandom(min, max) {
+                        return Math.floor(Math.random() * (max - min + 1)) + min;
+                    }
+                    intRandom(min, max)
+                    console.log(randoms)
+                    
+                    var number = 0
+                    var answer = Math.floor(Math.random() * 4)
+                    var ytid = results[randoms[answer]].id; // 動画ID
+                    var url = 'https://www.googleapis.com/youtube/v3/videos';
+                    url += '?part=statistics'; // レスポンスに含める情報を指定
+                    url += '&id=' + ytid; // 取得する動画IDを指定
+                    url += '&key=' + apikey; // APIキーを指定
+                    const xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        console.log('再生数:', this.response.items[0].statistics.viewCount);
+                        $("#saisei").text(this.response.items[0].statistics.viewCount)
+                        $("#a").text(results[randoms[0]].title)
+                        $("#b").text(results[randoms[1]].title)
+                        $("#c").text(results[randoms[2]].title)
+                        $("#d").text(results[randoms[3]].title)
+
+                        $("#a").on("click", function () {
+                            if (number == answer) {
+                                $('#modalArea').fadeIn();
+                                $('#closeModal , #modalBg').click(function () {
+                                $('#modalArea').fadeOut();})
+                                }
+                            else {
+                                $('#modalArea2').fadeIn();
+                                $('#closeModal2 , #modalBg2').click(function () {
+                                $('#modalArea2').fadeOut();
+                                })
+                                $("#ro").on("click", function () {
+                                    location.reload();
+                                    console.log("a")
+                                })
+                                $("#jo").on("click", function () {
+                                    location.href = "bbb.html"
+                                })
+                            }
+                        })
+
+                        $("#b").on("click", function () {
+                            number=number+1
+                            if (number == answer) {
+                                $('#modalArea').fadeIn();
+                                $('#closeModal , #modalBg').click(function () {
+                                $('#modalArea').fadeOut();
+                                })
+                            }
+                            else {
+                                $('#modalArea2').fadeIn();
+                                $('#closeModal2 , #modalBg2').click(function () {
+                                $('#modalArea2').fadeOut();
+                                })
+                                $("#ro").on("click", function () {
+                                    location.reload();
+                                    console.log("a")
+                                })
+                                $("#jo").on("click", function () {
+                                    location.href = "bbb.html"
+                                })
+                            }
+                        })
+
+                        $("#c").on("click", function () {
+                            number = number + 2
+                            if (number == answer) {
+                                $('#modalArea').fadeIn();
+                                $('#closeModal , #modalBg').click(function () {
+                                $('#modalArea').fadeOut();
+                                })
+                            }
+                            else {
+                                $('#modalArea2').fadeIn();
+                                $('#closeModal2 , #modalBg2').click(function () {
+                                $('#modalArea2').fadeOut();
+                                })
+                                $("#ro").on("click", function () {
+                                    location.reload();
+                                    console.log("a")
+                                })
+                                $("#jo").on("click", function () {
+                                    location.href = "bbb.html"
+                                })
+                            }
+                        })
+
+                        $("#d").on("click", function () {
+                            number = number + 3
+                            if (number == answer) {
+                                $('#modalArea').fadeIn();
+                                $('#closeModal , #modalBg').click(function () {
+                                $('#modalArea').fadeOut();
+                                })
+                            }
+                            else {
+                                $('#modalArea2').fadeIn();
+                                $('#closeModal2 , #modalBg2').click(function () {
+                                $('#modalArea2').fadeOut();
+                                })
+                                $("#ro").on("click", function () {
+                                    location.reload();
+                                    console.log("a")
+                                })
+                                $("#jo").on("click", function () {
+                                    location.href = "bbb.html"
+                                })
+                            }
+                        });
+                        document.getElementById('seikai').innerHTML = results[randoms[answer]].title
+
+                        $("#re").on("click", function () {
+                            location.reload();
+                        })
+
+                        $("#ju").on("click", function () {
+                            location.href="bbb.html"
+                        })
+                            
+                    }
+                    xhr.open('GET', url);
+                    xhr.responseType = 'json';
+                    xhr.send();
+                    
+                },
+                function (error) {
+                    console.log(error);
+                }
+
+            );
+        };    
+
+    
+        
+
+        
+</script>
+</body>
+</html>
