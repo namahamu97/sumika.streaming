@@ -1,0 +1,152 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family:'Avenir','Helvetica, Neue','Helvetica','Arial';
+  background-image: url("FDUeB_gaUAAnDsd.jpeg");
+  background-size: cover;
+}
+
+
+/* モーダルCSS */
+.modalArea {
+  display: none;
+  position: fixed;
+  z-index: 5; /*サイトによってここの数値は調整 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modalBg {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30,30,30,0.9);
+}
+
+.modalWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform:translate(-50%,-50%);
+  width: 70%;
+  max-width: 500px;
+  padding: 10px 30px;
+  background-color: #fff;
+}
+
+/* .closeModal {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
+} */
+
+img{
+    width: 400px;
+}
+
+.modalContents{
+    text-align: center;
+}
+
+.mondai{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    background-color: rgba(252, 252, 252, 0.575);
+    margin: 0px;
+}
+
+.bun,#seikai{
+    font-size: 30px;
+}
+
+h1{
+    font-size: 50px;
+}
+
+#a,#b,#c,#d{
+    width: 700px;
+    border: 1px solid #ccc;
+    color: rgb(255, 255, 255);
+    padding:10px 20px;
+    display: inline-block;
+    text-decoration: none; 
+    outline: none;
+    background-color: rgba(117, 117, 117, 0.726);
+    /*アニメーションの指定*/
+    transition: all .3s;
+}
+
+#re,#ro,#ju,#jo{
+    /*キラッと光る基点とするためrelativeを指定*/
+  position: relative;
+    /*ボタンの形状*/  
+  display:inline-block;
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    outline: none;
+    overflow: hidden;
+}
+
+/*キラッと光る*/
+#re::before,#ro::before,#ju::before,#jo::before {
+  content: '';
+    /*絶対配置でキラッと光るの位置を決める*/
+  position: absolute;
+  top: 0;
+  left: -75%;
+    /*キラッと光る形状*/
+    width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+  transform: skewX(-25deg);
+}
+
+/*hoverした際の移動のアニメーション*/
+#re:hover::before,#ro:hover::before,#ju:hover::before,#jo:hover::before {
+  animation: shine 0.7s;
+}
+
+@keyframes shine {
+  100% {
+    left: 125%;
+  }
+}
+
+
+/*hoverをしたらボックスに影がつく*/
+button:hover {
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.3);
+  border-color: transparent;
+}
+
+.sentaku{
+    flex-direction: column;
+    justify-content: center;
+}
+
+h2{
+  margin: 0px;
+}
+
+/* 以下ボタンスタイル
+button {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #282828;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+#openModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform:translate(-50%,-50%);
+} */
